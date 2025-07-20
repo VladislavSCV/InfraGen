@@ -98,15 +98,3 @@ infraGen deploy --cloud yandex --auth ~/.yc/auth.json
 📥 "Что за фреймворк?"
 📥 "Какой порт слушает приложение?"
 📥 "Есть ли переменные окружения?"
-
-
- Go - (detected) suitable for a Go server application
-  Python - suitable for a Python server application
-  Node - suitable for a Node server application
-  Rust - suitable for a Rust server application
-  ASP.NET Core - suitable for an ASP.NET Core application
-  PHP with Apache - suitable for a PHP web application
-  Java - suitable for a Java application that uses Maven and packages as an uber jar
-  Other - general purpose starting point for containerizing your application
-  Don't see something you need? Let us know!
-  Qui
