@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .AppName }}
+  namespace: {{ .Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .AppName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .AppName }}
+    spec:
+      containers:
+        - name: {{ .AppName }}
+          image: {{ .Image }}
+          ports:
+            - containerPort: {{ .ListenPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ .AppName }}-config

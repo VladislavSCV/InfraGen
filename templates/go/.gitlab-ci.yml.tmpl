@@ -1,0 +1,62 @@
+stages:
+  - lint
+  - test
+  - build
+  - docker
+  {{- if .EnableDeploy }}
+  - deploy
+  {{- end }}
+
+variables:
+  APP_NAME: "{{ .AppName }}"
+  GO_VERSION: "{{ .GoVersion }}"
+  DOCKER_REGISTRY: "{{ .DockerRegistry }}"
+  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+
+default:
+  image: golang:{{ .GoVersion }}
+
+before_script:
+  - go mod tidy
+
+lint:
+  stage: lint
+  script:
+    - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+    - golangci-lint run ./...
+  allow_failure: false
+
+test:
+  stage: test
+  script:
+    - go test -v ./...
+  coverage: '/coverage: (\d+\.\d+)%/'
+
+build:
+  stage: build
+  script:
+    - go build -v -o {{ .AppName }} .
+
+docker:
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $DOCKER_REGISTRY:$IMAGE_TAG .
+    - docker push $DOCKER_REGISTRY:$IMAGE_TAG
+
+{{ if .EnableDeploy }}
+deploy:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  script:
+    - echo "$KUBE_CONFIG" > kubeconfig
+    - export KUBECONFIG=$CI_PROJECT_DIR/kubeconfig
+    - kubectl apply -f infra/
+  only:
+    - main
+{{ end }}

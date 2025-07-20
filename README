@@ -1,0 +1,112 @@
+> **"InfraGen"** — CLI-инструмент, который по анализу проекта генерирует манифесты и конфиги для:
+
+* Kubernetes (Deployment, Service, Ingress)
+* CI/CD (GitHub Actions / GitLab CI)
+* Monitoring (Prometheus, Grafana dashboards)
+* Logging (Loki)
+* Secrets (SOPS/Vault)
+* Helm chart или Kustomize (на выбор)
+
+---
+
+## 🧠 Архитектура MVP:
+
+```
+User Project Folder
+      │
+      ▼
+infraGen scan ./project
+      │
+      ▼
+🧠 Анализ кода (Go/Node/Dockerfile/package.json/etc)
+      │
+      ├──> Определение типа: API / worker / SPA
+      └──> Определение портов, переменных, зависимостей
+      ▼
+infraGen generate
+      ├──> k8s/
+      │     ├── deployment.yaml
+      │     ├── service.yaml
+      │     └── ingress.yaml
+      ├──> ci/
+      │     └── github-actions.yml
+      └──> helm-chart/
+            └── templates/*.yaml
+```
+
+---
+
+## ⚙️ CLI — как делать?
+
+Пиши на **Go** (идеально для CLI, быстрая компиляция, статичный бинари):
+
+1. Используй [cobra](https://github.com/spf13/cobra) — стандарт для CLI на Go:
+
+   ```bash
+   infraGen scan ./project
+   infraGen generate --output ./k8s
+   infraGen deploy --provider yandex
+   ```
+
+2. Внутри — набор шаблонов (`tmpl/*.yaml`) + структура данных:
+
+   ```go
+   type AppMeta struct {
+     Name string
+     Port int
+     Env  map[string]string
+     Framework string // go/gin, node/express, etc
+   }
+   ```
+
+3. Парсер:
+
+   * Dockerfile → порты, команды
+   * package.json → порт (express apps), env
+   * main.go / go.mod → для Go-проектов
+
+4. Генератор → шаблонизатор (text/template или go-yaml).
+
+---
+
+## 🧪 Примеры юзкейсов:
+
+```bash
+infraGen scan ./my-go-api
+# [INFO] Detected: Go (Gin) on port 8080
+
+infraGen generate --helm
+# => ./helm-chart/...
+
+infraGen deploy --cloud yandex --auth ~/.yc/auth.json
+```
+
+---
+
+## ❓Как определять тип проекта?
+
+🔍 Сканируем:
+
+| Файл           | Вывод                              |
+| -------------- | ---------------------------------- |
+| `Dockerfile`   | порт, команда запуска              |
+| `package.json` | `"scripts": { start }`, `"main"`   |
+| `go.mod`       | импорт `gin`, `echo`, `fiber` etc. |
+| `main.go`      | порт через `Run(":8080")`          |
+
+Если не находит — запрашиваем вручную:
+📥 "Что за фреймворк?"
+📥 "Какой порт слушает приложение?"
+📥 "Есть ли переменные окружения?"
+
+
+ Go - (detected) suitable for a Go server application
+  Python - suitable for a Python server application
+  Node - suitable for a Node server application
+  Rust - suitable for a Rust server application
+  ASP.NET Core - suitable for an ASP.NET Core application
+  PHP with Apache - suitable for a PHP web application
+  Java - suitable for a Java application that uses Maven and packages as an uber jar
+  Other - general purpose starting point for containerizing your application
+  Don't see something you need? Let us know!
+  Qui
