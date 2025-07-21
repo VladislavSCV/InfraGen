@@ -1,11 +1,11 @@
-> **"InfraGen"** — CLI-инструмент, который по анализу проекта генерирует манифесты и конфиги для:
+**"InfraGen"** — CLI-инструмент, который по анализу проекта генерирует манифесты и конфиги для:
 
 * Kubernetes (Deployment, Service, Ingress)
-* CI/CD (GitHub Actions / GitLab CI)
-* Monitoring (Prometheus, Grafana dashboards)
-* Logging (Loki)
-* Secrets (SOPS/Vault)
-* Helm chart или Kustomize (на выбор)
+* CI/CD (GitLab CI)
+* Monitoring (Prometheus, Grafana dashboards) - еще нет
+* Logging (Loki) - еще нет
+* Secrets (SOPS/Vault) - еще нет
+* Helm chart - еще нет
 
 
 ## 🧪 Примеры юзкейсов:
