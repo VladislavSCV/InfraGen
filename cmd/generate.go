@@ -40,22 +40,22 @@ to quickly create a Cobra application.`,
 		choice := utils.PromptUser(detected)
 
 		switch choice {
-			case "Go - suitable for a Go server application":
-				utils.RunGoQuestions(path)
+		case "Go - suitable for a Go server application":
+			utils.RunGoQuestions(path)
 
-			case "Python - suitable for a Python server application":
-				// TODO: runPythonQuestions(path)
+		case "Python - suitable for a Python server application":
+			// TODO: runPythonQuestions(path)
 
-			case "other":
-				fmt.Println("🛠 Пока реализована только генерация для Go. Скоро будет больше.")
+		case "other":
+			fmt.Println("🛠 Пока реализована только генерация для Go. Скоро будет больше.")
 
-			case "quit":
-				fmt.Println("👋 Выход.")
-				os.Exit(0)
+		case "quit":
+			fmt.Println("👋 Выход.")
+			os.Exit(0)
 
-			default:
-				fmt.Println("❗ Неизвестный выбор.")
-			}
+		default:
+			fmt.Println("❗ Неизвестный выбор.")
+		}
 
 	},
 }

@@ -81,3 +81,7 @@ func RunGoQuestions(projectPath string) {
 		fmt.Println("✅ Все манифесты успешно сгенерированы в папке infra.")
 	}
 }
+
+func RunPythonQuestions(projectPath string) {
+	fmt.Println("❌ Пока не работает, но скоро будет")
+}

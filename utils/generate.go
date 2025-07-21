@@ -13,29 +13,29 @@ func GenerateManifestsForGo(answers GoAnswers, projectPath string) error {
 		return err
 	}
 
-	templatesDir := "templates/go"
 	files := []string{
-		"Dockerfile",
-		"compose.yaml",
-		".dockerignore",
-
-		"deployment.yaml",
-		"service.yaml",
-		"configmap.yaml",
-		"ingress.yaml",
-
-		".gitlab-ci.yml",
+		"Dockerfile.tmpl",
+		"compose.yaml.tmpl",
+		".dockerignore.tmpl",
+		"deployment.yaml.tmpl",
+		"service.yaml.tmpl",
+		"configmap.yaml.tmpl",
+		"ingress.yaml.tmpl",
+		".gitlab-ci.yml.tmpl",
 	}
 
 	for _, name := range files {
-		tmplPath := filepath.Join(templatesDir, name+".tmpl")
-		outPath := filepath.Join(infraPath, name)
-
-		tmpl, err := template.ParseFiles(tmplPath)
+		data, err := Asset(name)
 		if err != nil {
 			return err
 		}
 
+		tmpl, err := template.New(name).Parse(string(data))
+		if err != nil {
+			return err
+		}
+
+		outPath := filepath.Join(infraPath, name[:len(name)-5]) // без .tmpl
 		outFile, err := os.Create(outPath)
 		if err != nil {
 			return err

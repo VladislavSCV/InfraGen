@@ -4,7 +4,9 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "infraGen/cmd"
+import (
+	"infraGen/cmd"
+)
 
 func main() {
 	cmd.Execute()
